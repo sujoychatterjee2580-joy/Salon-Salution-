@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rock Salon - স্মার্ট গ্রাফিক্যাল স্লট ও বুকিং</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen font-sans select-none pb-14">
+
+  <main class="max-w-md mx-auto p-4 space-y-4">
+
+    <!-- ওনার প্রোফাইল ও সেলুন ব্র্যান্ডিং -->
+    <header class="bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-xl">
+      <div class="flex items-center gap-3.5">
+        <div class="relative">
+          <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80" alt="Owner" class="w-16 h-16 rounded-full object-cover border-2 border-amber-400 shadow-md">
+          <span class="absolute bottom-0 right-0 w-4 h-4 bg-emerald-500 border-2 border-slate-900 rounded-full"></span>
+        </div>
+        <div class="flex-1 min-w-0">
+          <div class="flex items-center justify-between">
+            <h1 class="text-lg font-black text-amber-400 tracking-wide truncate">ROCK SALON</h1>
+            <span class="bg-amber-400/10 text-amber-300 text-[10px] font-bold px-2 py-0.5 rounded border border-amber-400/20">১ চেয়ার</span>
+          </div>
+          <p id="owner-name-display" class="text-xs font-semibold text-slate-200 mt-0.5">মালিক: অমিত সেন</p>
+          <p id="owner-address-display" class="text-[11px] text-slate-400 mt-0.5 truncate">
+            <i class="fa-solid fa-location-dot text-rose-500 text-xs"></i> স্টেশন রোড, বাঁকুড়া
+          </p>
+        </div>
+      </div>
+      <div class="mt-3 pt-3 border-t border-slate-800 flex justify-between items-center text-[11px]">
+        <span class="text-slate-400"><i class="fa-solid fa-clock text-amber-400"></i> ৯:০০-৩:০০ | ৬:০০-৯:০০</span>
+        <span class="text-emerald-400 font-bold flex items-center gap-1">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> লাইভ স্লট
+        </span>
+      </div>
+    </header>
+
+    <!-- কালার কোড লেজেন্ড -->
+    <div class="bg-slate-900/60 p-2.5 rounded-xl border border-slate-800 flex justify-around text-xs font-medium">
+      <div class="flex items-center gap-1.5 text-emerald-400">
+        <span class="w-3 h-3 rounded-md bg-emerald-500"></span> ফাঁকা
+      </div>
+      <div class="flex items-center gap-1.5 text-rose-400">
+        <span class="w-3 h-3 rounded-md bg-rose-600"></span> বুকড / ব্যস্ত
+      </div>
+      <div class="flex items-center gap-1.5 text-amber-400">
+        <span class="w-3 h-3 rounded-md bg-amber-500"></span> ⚡ ইমার্জেন্সি
+      </div>
+    </div>
+
+    <!-- গ্রাফিক্যাল স্লট উইন্ডো -->
+    <section>
+      <div class="flex justify-between items-center mb-2.5 px-1">
+        <h2 class="text-xs font-bold text-slate-300 uppercase tracking-wider">
+          <i class="fa-solid fa-calendar-check text-amber-400"></i> আজকের শিডিউল স্লট
+        </h2>
+        <span class="text-[10px] text-slate-500">ট্যাপ করে বুক করুন</span>
+      </div>
+      <div id="slots-grid" class="grid grid-cols-2 gap-2.5"></div>
+    </section>
+
+    <!-- কাস্টমার অনলাইন বুকিং মডাল -->
+    <div id="booking-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-end sm:items-center justify-center p-0 sm:p-4">
+      <div class="bg-slate-900 w-full max-w-md rounded-t-2xl sm:rounded-2xl p-5 border border-slate-800 shadow-2xl">
+        <div class="flex justify-between items-center border-b border-slate-800 pb-3 mb-4">
+          <div>
+            <h3 class="font-bold text-white text-base">Rock Salon সিট বুকিং</h3>
+            <p id="modal-slot-time" class="text-xs text-amber-400 font-semibold"></p>
+          </div>
+          <button onclick="closeBookingModal()" class="text-slate-400 hover:text-white text-2xl font-bold">&times;</button>
+        </div>
+        <form onsubmit="handleOnlineBooking(event)" class="space-y-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">আপনার নাম</label>
+            <input type="text" id="cust-name" required placeholder="নাম লিখুন" class="w-full text-sm bg-slate-950 border border-slate-700 rounded-lg p-2.5 text-white outline-none focus:border-amber-400">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">হোয়াটসঅ্যাপ নম্বর</label>
+            <input type="tel" id="cust-phone" required placeholder="১০ সংখ্যার মোবাইল নম্বর" class="w-full text-sm bg-slate-950 border border-slate-700 rounded-lg p-2.5 text-white outline-none focus:border-amber-400">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">সার্ভিস বেছে নিন</label>
+            <select id="cust-service" onchange="calculatePrice()" class="w-full text-sm bg-slate-950 border border-slate-700 rounded-lg p-2.5 text-white outline-none focus:border-amber-400"></select>
+          </div>
+          <div class="bg-slate-950 border border-slate-800 rounded-lg p-3 flex justify-between items-center">
+            <span class="text-xs text-slate-400">প্রদেয় বিল:</span>
+            <span id="price-display" class="text-xl font-black text-amber-400">₹৫০</span>
+          </div>
+          <button type="submit" class="w-full bg-amber-400 hover:bg-amber-300 text-slate-950 font-black py-3 rounded-lg text-sm transition">
+            স্লট কনফার্ম করুন
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- বুকিং নিশ্চিতকরণ সাকসেস পপ-আপ -->
+    <div id="success-modal" class="fixed inset-0 bg-black/85 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+      <div class="bg-slate-900 w-full max-w-sm rounded-2xl p-5 border border-slate-800 shadow-2xl text-center space-y-4">
+        <div class="w-14 h-14 bg-emerald-500/20 text-emerald-400 rounded-full flex items-center justify-center mx-auto text-3xl border border-emerald-500/30">
+          <i class="fa-solid fa-check"></i>
+        </div>
+        <div>
+          <h3 class="text-lg font-black text-white">বুকিং সফল হয়েছে!</h3>
+          <p id="success-summary" class="text-xs text-slate-400 mt-1"></p>
+        </div>
+        <button onclick="sendOwnerWhatsApp()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2.5 rounded-lg text-xs flex items-center justify-center gap-2 shadow">
+          <i class="fa-brands fa-whatsapp text-base"></i> ওনারকে WhatsApp মেসেজ দিন
+        </button>
+        <button onclick="closeSuccessModal()" class="w-full text-xs text-slate-400 py-1 hover:text-white">উইন্ডো বন্ধ করুন</button>
+      </div>
+    </div>
+
+    <!-- ৩ বার দ্রুত টাচ সিক্রেট অ্যাডমিন (দাম কাস্টমাইজেশন ও সাউন্ড সহ) -->
+    <div id="admin-modal" class="fixed inset-0 bg-black/90 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+      <div class="bg-slate-900 w-full max-w-sm rounded-2xl p-5 border border-slate-700 shadow-2xl max-h-[90vh] overflow-y-auto">
+        <!-- লক স্ক্রিন -->
+        <div id="admin-lock">
+          <div class="text-center mb-4">
+            <i class="fa-solid fa-shield-halved text-amber-400 text-3xl mb-2"></i>
+            <h3 class="text-base font-bold text-white">ওনার অ্যাডমিন ভেরিফিকেশন</h3>
+            <p class="text-xs text-slate-400">গোপন পিন লিখুন (ডিফল্ট: 1234)</p>
+          </div>
+          <input type="password" id="admin-pin-field" maxlength="4" placeholder="••••" class="text-center text-2xl font-mono w-full bg-slate-950 border border-slate-700 rounded-lg p-2.5 mb-3 text-white outline-none focus:border-amber-400">
+          <div class="flex gap-2">
+            <button onclick="verifyPin()" class="flex-1 bg-amber-400 text-slate-950 font-bold py-2 rounded-lg text-xs">লগইন</button>
+            <button onclick="closeAdminModal()" class="flex-1 bg-slate-800 text-slate-300 font-bold py-2 rounded-lg text-xs">বাতিল</button>
+          </div>
+        </div>
+
+        <!-- অ্যাডমিন ড্যাশবোর্ড -->
+        <div id="admin-dashboard" class="hidden space-y-4 text-xs">
+          <div class="flex justify-between items-center border-b border-slate-800 pb-2">
+            <h3 class="font-bold text-amber-400 flex items-center gap-1.5">
+              <i class="fa-solid fa-sliders"></i> Rock Salon কন্ট্রোল প্যানেল
+            </h3>
+            <button onclick="closeAdminModal()" class="text-slate-400 text-lg">&times;</button>
+          </div>
+
+          <!-- ওয়াক-ইন অফলাইন কাস্টমার এন্ট্রি -->
+          <div class="bg-slate-950 p-3 rounded-xl border border-amber-500/30 space-y-2">
+            <p class="font-bold text-amber-400 flex items-center gap-1">
+              <i class="fa-solid fa-person-walking"></i> ওয়াক-ইন (ফোন ছাড়া অফলাইন এন্ট্রি)
+            </p>
+            <input type="text" id="walkin-name" placeholder="কাস্টমারের নাম (যেমন: স্বপন দা)" class="w-full bg-slate-900 border border-slate-700 p-2 rounded text-white outline-none">
+            <select id="walkin-slot-select" class="w-full bg-slate-900 border border-slate-700 p-2 rounded text-white outline-none"></select>
+            <button onclick="bookWalkInCustomer()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2 rounded-lg transition shadow">
+              <i class="fa-solid fa-chair"></i> চেয়ারে বসান (স্লট ব্লক করুন)
+            </button>
+          </div>
+
+          <!-- সার্ভিস ও দাম কাস্টমাইজেশন সেকশন -->
+          <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 space-y-2.5">
+            <p class="font-bold text-slate-200 flex items-center gap-1">
+              <i class="fa-solid fa-tags text-amber-400"></i> সার্ভিসের দাম পরিবর্তন করুন:
+            </p>
+            <div id="admin-services-list" class="space-y-2"></div>
+            <button onclick="saveCustomPrices()" class="w-full bg-amber-400 text-slate-950 font-bold py-2 rounded-lg transition shadow">
+              <i class="fa-solid fa-floppy-disk"></i> নতুন রেট সেভ করুন
+            </button>
+          </div>
+
+          <!-- স্লট রিলিজ ও কাজ শেষ বাটন -->
+          <div class="space-y-2">
+            <p class="font-bold text-slate-300">বর্তমান স্লট স্ট্যাটাস:</p>
+            <div id="admin-slots-list" class="space-y-1.5 max-h-40 overflow-y-auto pr-1"></div>
+          </div>
+
+          <!-- সম্পূর্ণ রিসেট -->
+          <div class="pt-2 border-t border-slate-800">
+            <button onclick="resetAllSlots()" class="w-full bg-rose-600/20 text-rose-400 border border-rose-500/30 py-2 rounded-lg font-bold">
+              <i class="fa-solid fa-arrows-rotate"></i> দিনের সব স্লট রিসেট করুন
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <script>
+    const SECRET_PIN = "1234";
+
+    /* ==========================================================
+       Web Audio API - রিয়েল সিন্থেটিক সাউন্ড ইফেক্ট ইঞ্জিন
+       ========================================================== */
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+    function playSound(type) {
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+      const now = audioCtx.currentTime;
+
+      if (type === 'click') {
+        // ছোট পপ সাউন্ড
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(600, now);
+        osc.frequency.exponentialRampToValueAtTime(300, now + 0.05);
+        gain.gain.setValueAtTime(0.3, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.05);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start(now);
+        osc.stop(now + 0.05);
+      } 
+      else if (type === 'success') {
+        // সাকসেস ডিং-ডং কাইম
+        [523.25, 659.25, 783.99, 1046.50].forEach((freq, index) => {
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.value = freq;
+          gain.gain.setValueAtTime(0.2, now + index * 0.08);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + index * 0.08 + 0.3);
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          osc.start(now + index * 0.08);
+          osc.stop(now + index * 0.08 + 0.3);
+        });
+      } 
+      else if (type === 'admin') {
+        // অ্যাডমিন আনলক ফ্যানফেয়ার
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'square';
+        osc.frequency.setValueAtTime(350, now);
+        osc.frequency.setValueAtTime(700, now + 0.1);
+        gain.gain.setValueAtTime(0.15, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start(now);
+        osc.stop(now + 0.25);
+      } 
+      else if (type === 'error') {
+        // অ্যালার্ট / ভুল পিন বিপ
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(150, now);
+        gain.gain.setValueAtTime(0.3, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start(now);
+        osc.stop(now + 0.2);
+      }
+    }
+
+    // অ্যাডমিন কাস্টমাইজেশন সহ সার্ভিস ও রেট
+    const defaultServices = [
+      { id: 'haircut', name: 'চুল কাটা (Haircut)', normal: 50, emergency: 100 },
+      { id: 'beard', name: 'দাড়ি সেট / ট্রিম', normal: 30, emergency: 60 },
+      { id: 'combo', name: 'চুল + দাড়ি কম্বো', normal: 80, emergency: 160 },
+      { id: 'facial', name: 'স্পেশাল ফেসিয়াল', normal: 150, emergency: 300 }
+    ];
+
+    let services = JSON.parse(localStorage.getItem('rock_salon_services')) || defaultServices;
+
+    // শিডিউল স্লট
+    const initialSlots = [
+      { id: 1, time: "09:00 - 09:30 AM", isVip: false, isBooked: false, customer: "" },
+      { id: 2, time: "09:30 - 10:00 AM", isVip: false, isBooked: false, customer: "" },
+      { id: 3, time: "10:00 - 10:30 AM", isVip: false, isBooked: false, customer: "" },
+      { id: 4, time: "10:30 - 11:00 AM", isVip: false, isBooked: false, customer: "" },
+      { id: 5, time: "11:00 - 11:30 AM", isVip: false, isBooked: false, customer: "" },
+      { id: 6, time: "11:30 - 12:00 PM", isVip: true, isBooked: false, customer: "" },
+      { id: 7, time: "12:00 - 12:30 PM", isVip: false, isBooked: false, customer: "" },
+      { id: 8, time: "12:30 - 01:00 PM", isVip: false, isBooked: false, customer: "" },
+      { id: 9, time: "01:00 - 01:30 PM", isVip: false, isBooked: false, customer: "" },
+      { id: 10, time: "01:30 - 02:00 PM", isVip: true, isBooked: false, customer: "" },
+      { id: 11, time: "02:00 - 02:30 PM", isVip: false, isBooked: false, customer: "" },
+      { id: 12, time: "02:30 - 03:00 PM", isVip: false, isBooked: false, customer: "" },
+      { id: 13, time: "06:00 - 06:30 PM", isVip: false, isBooked: false, customer: "" },
+      { id: 14, time: "06:30 - 07:00 PM", isVip: false, isBooked: false, customer: "" },
+      { id: 15, time: "07:00 - 07:30 PM", isVip: false, isBooked: false, customer: "" },
+      { id: 16, time: "07:30 - 08:00 PM", isVip: true, isBooked: false, customer: "" },
+      { id: 17, time: "08:00 - 08:30 PM", isVip: false, isBooked: false, customer: "" },
+      { id: 18, time: "08:30 - 09:00 PM", isVip: false, isBooked: false, customer: "" }
+    ];
+
+    let slots = JSON.parse(localStorage.getItem('rock_salon_slots')) || initialSlots;
+    let selectedSlot = null;
+    let activeBooking = null;
+
+    function renderSlots() {
+      const grid = document.getElementById('slots-grid');
+      grid.innerHTML = '';
+
+      slots.forEach(slot => {
+        let cardBg = "bg-slate-900 border-slate-800 hover:border-slate-700";
+        let statusBadge = `<span class="text-[10px] text-emerald-400 font-bold bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">খালি</span>`;
+        let chairColor = "text-emerald-400";
+        let btn = `<button onclick="openBooking(${slot.id})" class="mt-2 w-full bg-slate-800 hover:bg-amber-400 hover:text-slate-950 text-white text-xs font-bold py-1.5 rounded-lg transition">সিট বুক</button>`;
+
+        if (slot.isBooked) {
+          cardBg = "bg-slate-950 border-rose-950/40 opacity-50";
+          statusBadge = `<span class="text-[10px] text-rose-400 font-bold bg-rose-500/10 px-2 py-0.5 rounded border border-rose-500/20">${slot.customer || 'বুকড'}</span>`;
+          chairColor = "text-rose-500";
+          btn = `<button disabled class="mt-2 w-full bg-slate-900 text-slate-600 text-xs font-semibold py-1.5 rounded-lg cursor-not-allowed">লকড</button>`;
+        } else if (slot.isVip) {
+          cardBg = "bg-amber-950/10 border-amber-500/30 hover:border-amber-400";
+          statusBadge = `<span class="text-[10px] text-amber-400 font-bold bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20">⚡ ইমার্জেন্সি</span>`;
+          chairColor = "text-amber-400";
+          btn = `<button onclick="openBooking(${slot.id})" class="mt-2 w-full bg-amber-400 hover:bg-amber-300 text-slate-950 text-xs font-black py-1.5 rounded-lg transition">⚡ বুক (ডাবল)</button>`;
+        }
+
+        const card = document.createElement('div');
+        card.className = `p-3 rounded-xl border shadow-sm flex flex-col justify-between ${cardBg}`;
+        card.innerHTML = `
+          <div>
+            <div class="flex items-center justify-between mb-1">
+              <i class="fa-solid fa-chair ${chairColor} text-sm"></i>
+              ${statusBadge}
+            </div>
+            <p class="font-bold text-white text-xs">${slot.time}</p>
+          </div>
+          ${btn}
+        `;
+        grid.appendChild(card);
+      });
+
+      localStorage.setItem('rock_salon_slots', JSON.stringify(slots));
+    }
+
+    function populateCustomerServices() {
+      const select = document.getElementById('cust-service');
+      select.innerHTML = '';
+      services.forEach(s => {
+        const opt = document.createElement('option');
+        opt.value = s.id;
+        opt.setAttribute('data-normal', s.normal);
+        opt.setAttribute('data-emergency', s.emergency);
+        opt.innerText = `${s.name}`;
+        select.appendChild(opt);
+      });
+    }
+
+    function openBooking(id) {
+      playSound('click');
+      selectedSlot = slots.find(s => s.id === id);
+      document.getElementById('modal-slot-time').innerText = `${selectedSlot.time} (${selectedSlot.isVip ? '⚡ ইমার্জেন্সি ডাবল রেট' : 'সাধারণ রেট'})`;
+      populateCustomerServices();
+      calculatePrice();
+      document.getElementById('booking-modal').classList.remove('hidden');
+    }
+
+    function closeBookingModal() {
+      document.getElementById('booking-modal').classList.add('hidden');
+    }
+
+    function calculatePrice() {
+      if (!selectedSlot) return;
+      const select = document.getElementById('cust-service');
+      const opt = select.options[select.selectedIndex];
+      const price = selectedSlot.isVip ? opt.getAttribute('data-emergency') : opt.getAttribute('data-normal');
+      document.getElementById('price-display').innerText = `₹${price}`;
+    }
+
+    function handleOnlineBooking(e) {
+      e.preventDefault();
+      const name = document.getElementById('cust-name').value;
+      const phone = document.getElementById('cust-phone').value;
+      const select = document.getElementById('cust-service');
+      const serviceName = select.options[select.selectedIndex].text;
+      const price = document.getElementById('price-display').innerText;
+
+      selectedSlot.isBooked = true;
+      selectedSlot.customer = name;
+      renderSlots();
+      closeBookingModal();
+
+      activeBooking = { name, phone, serviceName, price, time: selectedSlot.time, isVip: selectedSlot.isVip };
+
+      playSound('success');
+      document.getElementById('success-summary').innerText = `${name}, আপনার জন্য ${selectedSlot.time} স্লটটি বুক করা হয়েছে (${price})।`;
+      document.getElementById('success-modal').classList.remove('hidden');
+
+      e.target.reset();
+    }
+
+    function closeSuccessModal() {
+      document.getElementById('success-modal').classList.add('hidden');
+    }
+
+    function sendOwnerWhatsApp() {
+      if (!activeBooking) return;
+      const b = activeBooking;
+      const msg = encodeURIComponent(
+        `🚨 *নতুন বুকিং অ্যালার্ট - Rock Salon*\n\n` +
+        `• কাস্টমার: ${b.name} (${b.phone})\n` +
+        `• সময়: ${b.time} (${b.isVip ? '⚡ ইমার্জেন্সি' : 'সাধারণ'})\n` +
+        `• সার্ভিস: ${b.serviceName}\n` +
+        `• বিল: ${b.price}\n\n` +
+        `চেয়ার রেডি রাখুন!`
+      );
+      window.open(`https://wa.me/919876543210?text=${msg}`, '_blank');
+    }
+
+    /* ৩ বার দ্রুত টাচ সিক্রেট অ্যাডমিন */
+    let tapCount = 0;
+    let tapTimer = null;
+    document.addEventListener('click', function(e) {
+      if (['BUTTON', 'INPUT', 'SELECT'].includes(e.target.tagName)) return;
+      tapCount++;
+      clearTimeout(tapTimer);
+      if (tapCount === 3) {
+        tapCount = 0;
+        openAdmin();
+      } else {
+        tapTimer = setTimeout(() => { tapCount = 0; }, 600);
+      }
+    });
+
+    function openAdmin() {
+      playSound('admin');
+      document.getElementById('admin-lock').classList.remove('hidden');
+      document.getElementById('admin-dashboard').classList.add('hidden');
+      document.getElementById('admin-pin-field').value = '';
+      document.getElementById('admin-modal').classList.remove('hidden');
+    }
+
+    function closeAdminModal() {
+      document.getElementById('admin-modal').classList.add('hidden');
+    }
+
+    function verifyPin() {
+      if (document.getElementById('admin-pin-field').value === SECRET_PIN) {
+        playSound('admin');
+        document.getElementById('admin-lock').classList.add('hidden');
+        document.getElementById('admin-dashboard').classList.remove('hidden');
+        loadAdminData();
+      } else {
+        playSound('error');
+        alert('ভুল পিন!');
+        closeAdminModal();
+      }
+    }
+
+    function loadAdminData() {
+      // সার্ভিস ও রেট এডিট ফর্ম
+      const sContainer = document.getElementById('admin-services-list');
+      sContainer.innerHTML = '';
+      services.forEach((s, idx) => {
+        const item = document.createElement('div');
+        item.className = 'grid grid-cols-5 gap-1.5 items-center';
+        item.innerHTML = `
+          <input type="text" value="${s.name}" id="srv-name-${idx}" class="col-span-2 bg-slate-900 border border-slate-700 p-1.5 rounded text-white text-[11px] outline-none">
+          <input type="number" value="${s.normal}" id="srv-norm-${idx}" title="সাধারণ রেট" class="bg-slate-900 border border-slate-700 p-1.5 rounded text-emerald-400 text-[11px] outline-none">
+          <input type="number" value="${s.emergency}" id="srv-emg-${idx}" title="ইমার্জেন্সি রেট" class="bg-slate-900 border border-slate-700 p-1.5 rounded text-amber-400 text-[11px] outline-none">
+          <span class="text-[10px] text-slate-500 text-center font-bold">নরমাল/VIP</span>
+        `;
+        sContainer.appendChild(item);
+      });
+
+      // ওয়াক-ইন ড্রপডাউন
+      const select = document.getElementById('walkin-slot-select');
+      select.innerHTML = '';
+      const freeSlots = slots.filter(s => !s.isBooked);
+      if (freeSlots.length === 0) {
+        select.innerHTML = '<option value="">সব স্লট বুকড!</option>';
+      } else {
+        freeSlots.forEach(s => {
+          const opt = document.createElement('option');
+          opt.value = s.id;
+          opt.innerText = `${s.time} ${s.isVip ? '(VIP)' : ''}`;
+          select.appendChild(opt);
+        });
+      }
+
+      // কুইক রিলিজ লিস্ট
+      const list = document.getElementById('admin-slots-list');
+      list.innerHTML = '';
+      slots.forEach(s => {
+        const row = document.createElement('div');
+        row.className = 'flex justify-between items-center bg-slate-950 p-2 rounded border border-slate-800';
+        row.innerHTML = `
+          <div>
+            <span class="font-bold text-white text-[11px]">${s.time}</span>
+            <span class="ml-1 text-[10px] ${s.isBooked ? 'text-rose-400' : 'text-emerald-400'}">${s.isBooked ? `(${s.customer || 'বুকড'})` : '(খালি)'}</span>
+          </div>
+          ${s.isBooked ? `<button onclick="releaseSlot(${s.id})" class="bg-rose-600/30 text-rose-300 px-2 py-0.5 rounded text-[10px] font-bold hover:bg-rose-600/50">কাজ শেষ / খালি করুন</button>` : ''}
+        `;
+        list.appendChild(row);
+      });
+    }
+
+    function saveCustomPrices() {
+      services.forEach((s, idx) => {
+        s.name = document.getElementById(`srv-name-${idx}`).value;
+        s.normal = parseInt(document.getElementById(`srv-norm-${idx}`).value) || 0;
+        s.emergency = parseInt(document.getElementById(`srv-emg-${idx}`).value) || 0;
+      });
+
+      localStorage.setItem('rock_salon_services', JSON.stringify(services));
+      playSound('success');
+      alert('নতুন রেট এবং সার্ভিস সফলভাবে সংরক্ষিত হয়েছে!');
+      loadAdminData();
+    }
+
+    function bookWalkInCustomer() {
+      const slotId = parseInt(document.getElementById('walkin-slot-select').value);
+      if (!slotId) {
+        playSound('error');
+        return alert('কোনো খালি স্লট নেই!');
+      }
+      const name = document.getElementById('walkin-name').value.trim() || 'ওয়াক-ইন কাস্টমার';
+
+      const target = slots.find(s => s.id === slotId);
+      target.isBooked = true;
+      target.customer = `🚶 ${name}`;
+
+      playSound('success');
+      renderSlots();
+      loadAdminData();
+      document.getElementById('walkin-name').value = '';
+      alert(`${name}-এর জন্য স্লট লক করা হয়েছে!`);
+    }
+
+    function releaseSlot(id) {
+      playSound('click');
+      const target = slots.find(s => s.id === id);
+      target.isBooked = false;
+      target.customer = '';
+      renderSlots();
+      loadAdminData();
+    }
+
+    function resetAllSlots() {
+      if (confirm('সমস্ত স্লট পুনরায় খালি করতে চান?')) {
+        playSound('click');
+        slots.forEach(s => { s.isBooked = false; s.customer = ''; });
+        renderSlots();
+        loadAdminData();
+        alert('সব স্লট খালি করা হয়েছে!');
+      }
+    }
+
+    renderSlots();
+  </script>
+</body>
+</html>
